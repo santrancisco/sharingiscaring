@@ -1,0 +1,48 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+  vars_files:
+    - settings.yml
+  pre_tasks:
+    - name: just an echo
+      debug:
+        msg: Running Ansible playbook
+    - name: check apt last update
+      stat: path=/var/cache/apt
+      register: apt_cache_stat
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+  roles:
+    - roles/pexpect
+    - roles/samba
+  tasks:
+    - name: Create new user
+      user:
+        name: "{{user.username}}"
+        group: vagrant
+        append: true
+        state: present
+        createhome: true
+    - name: Add smbpassword to {{user.username}}
+      become: yes
+      become_method: sudo
+      expect:
+        command: "smbpasswd -a {{user.username}}"
+        responses:
+          "New SMB password" : "{{user.smbpassword}}"
+          "Retype new SMB password" : "{{user.smbpassword}}"
+      when: user is defined
+    - name: Add smbpassword to vagrant user
+      become: yes
+      become_method: sudo
+      expect:
+        command: "smbpasswd -a vagrant"
+        responses:
+          "New SMB password" : "{{writeuser.smbpassword}}"
+          "Retype new SMB password" : "{{writeuser.smbpassword}}"
+      when: writeuser is defined
+

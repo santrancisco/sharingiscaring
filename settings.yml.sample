@@ -1,0 +1,22 @@
+## Setting for file sharing vagrant
+#
+# Execute `VBoxManage  list bridgedifs` to find the list of interface available for
+# bridging. Get the full name of it and insert it here.
+interface: "en0: Wi-Fi (AirPort)"
+
+samba:
+  sharename: "AWESOME"
+  path: "/vagrant/share"
+  writable: "yes"
+
+user:
+  username: "angie"
+  password: "secretpassword"
+  smbpassword: "secretpassword"
+
+## If you are using a share folder with the Host under /vagrant like i do,
+## File permission is all messed up so you would wanna use actual vagrant folder to log in
+## if you have the need to write files.
+writeuser:
+  username: "vagrant"
+  smbpassword: "secretpassword"

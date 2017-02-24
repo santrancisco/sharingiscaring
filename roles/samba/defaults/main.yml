@@ -1,0 +1,4 @@
+samba:
+  sharename: "AWESOME"
+  path: "/vagrant/share"
+  writable: "yes"

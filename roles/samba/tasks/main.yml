@@ -1,0 +1,10 @@
+- name: Ensure Samba-related packages are installed.
+  apt: pkg={{ item }} state=installed
+  with_items:
+  - samba
+  - samba-client
+  - samba-common
+  - cifs-utils
+- name: Copy config file for sharing
+  template: src=smb.conf.j2 dest=/etc/samba/smb.conf owner=root group=root mode=0644
+  notify: restart samba
